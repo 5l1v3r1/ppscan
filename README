@@ -1,0 +1,36 @@
+PPSCAN
+======
+
+QUICKNOTES: compile with gcc -o ppscan ppscan.c -lpthread, and run ./ppscan -h
+
+Yes, it's yet-another-port-scanner. However, the goal of this port scanner
+isn't to scan with tcp-connect or tcp-syn. Of course, it can do these things,
+but there are far more feature rich scanners which do a lot of classification
+and a lot more interesting things. This scanner's goal is to scan ports through
+services which allow arbitrary connections.
+
+Why is that useful? Well, think about the case where you need to pentest a
+client and discover they're running tinyproxy on an edge node. You can actually
+map out all the non-routable subnets the system is on if it is misconfigured.
+Also think about the case where the admin has run some rigidly compliant FTP
+server (GoldenFTP comes to mind here) and you can make arbitrary port 
+connections and use that information to determine internal nodes, and what
+services are being run.
+
+The other distinct advantage this scanner has is that it runs multiple scans in
+parallel. For instance, if you need to scan an entire Class C subnet for 1 port
+(ala propecia) doing so can be done just as quickly. Even better, you can set
+a number of threads to execute and have the system scan multiple ports for said
+network. Heck, make it a Class A network. PPSCAN doesn't care how big the 
+network happens to be.
+
+All networks are specified in CIDR notation (meaning AAA.BBB.CCC.DDD/mask). If
+you want a single host, just type it (ala AAA.BBB.CCC.DDD). If you are 
+specifying a masked network, the scanning will begin with the octets specified.
+IE: 1.2.3.4/16 would be 1.2.255.255 skipping 1.2.1.0/24 and 1.2.2.0/24 and 
+1.2.3.1-3
+
+Currently, banner grabbing isn't implemented, nor is http-auth. Those would be
+great features to add - someone write a patch and submit it :)
+
+-Aaron
